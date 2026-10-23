@@ -1,0 +1,27 @@
+{
+  "name": "aqua-monitor-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "贝类育苗水质监测平台后端：Express + node:sqlite + 模拟数据生成器",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "start": "node scripts/start.mjs",
+    "dev": "node --watch scripts/start.mjs",
+    "selftest": "node scripts/start.mjs --selftest",
+    "fake-sensor": "node scripts/start.mjs --fake-sensor",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.3"
+  }
+}

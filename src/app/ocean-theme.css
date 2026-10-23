@@ -1,0 +1,288 @@
+/* Blue-white ocean theme shared by the existing monitoring pages. */
+:root { --ocean-ink:#123557; --ocean-muted:#617a94; --ocean-line:#dce8f3; --ocean-blue:#1168dc; --ocean-teal:#079cae; --ocean-canvas:#f3f8fc; }
+html, body, #root { background:var(--ocean-canvas); }
+.system-page { padding:88px clamp(18px,2.5vw,48px) 40px; color:var(--ocean-ink); background:var(--ocean-canvas); font-family:Inter,"Microsoft YaHei","PingFang SC",sans-serif; }
+.system-page::before, .system-page::after { display:none; }
+.system-page > section { max-width:1680px; padding-block:20px; }
+.system-page h1 { color:var(--ocean-ink); text-shadow:none; }
+.system-page .system-demo-notice { max-width:1680px; margin:10px auto 0; padding:8px 12px; border:1px solid #dceaf6; border-radius:6px; background:#eaf3fc; color:#58738e; font-size:11px; line-height:1.6; font-weight:400; text-align:left; box-shadow:none; }
+
+/* A full-width top bar, independent of each page's content container. */
+.system-nav-wrap, .system-page > .system-nav-wrap { position:fixed; inset:0 0 auto; z-index:60; display:flex; align-items:center; gap:32px; width:100%; max-width:none; min-height:72px; padding:0 clamp(18px,2.5vw,48px); background:#084987; border-bottom:1px solid #29649a; box-shadow:0 2px 10px #163a6510; font-family:Inter,"Microsoft YaHei",sans-serif; }
+.system-brand { display:flex; align-items:center; flex:none; gap:12px; text-decoration:none; color:white; }
+.system-brand > svg { width:38px; height:38px; color:#b5edff; }
+.system-brand span { display:grid; gap:3px; }
+.system-brand strong { color:#fff; font-size:22px; letter-spacing:2px; line-height:1.2; }
+.system-brand small { color:#b7d7f1; font-size:9px; letter-spacing:1.5px; }
+.system-nav { display:flex; flex:1; justify-content:center; gap:8px; width:auto; padding:0; border:0; border-radius:0; background:none; box-shadow:none; backdrop-filter:none; }
+.system-nav .system-nav-item { min-height:44px; padding:12px 20px; gap:8px; border-radius:7px; color:#e6f2ff; font-size:14px; font-weight:600; letter-spacing:0; white-space:nowrap; transform:none; box-shadow:none; }
+.system-nav-item + .system-nav-item::before, .system-nav-group::before, .system-nav-item.is-active::after { display:none; }
+.system-nav .system-nav-item:hover, .system-nav .system-nav-item.is-open { background:#ffffff16; color:#fff; transform:none; box-shadow:none; }
+.system-nav .system-nav-item.is-active { background:#2379dc; color:#fff; box-shadow:inset 0 1px 0 #ffffff18; transform:none; }
+.system-nav-group-trigger { font:inherit; }
+.system-alert-badge, .system-alert-badge.is-abnormal { position:static; min-width:18px; height:18px; border:0; background:#ff6676; color:#fff; box-shadow:none; font-family:inherit; font-size:10px; }
+.system-nav-mode { flex:none; padding:7px 13px; border:1px solid #78a9d5; border-radius:6px; color:#e2f2ff; background:#ffffff0a; font-size:12px; }
+.system-nav-dropdown { border:1px solid var(--ocean-line); border-radius:8px; background:white; box-shadow:0 12px 32px #143b6426; backdrop-filter:none; }
+.system-nav-dropdown .system-nav-dropdown-item { padding:12px; color:var(--ocean-ink); border-radius:5px; font-size:13px; }
+.system-nav-dropdown .system-nav-dropdown-item:hover, .system-nav-dropdown .system-nav-dropdown-item.is-active { color:var(--ocean-blue); background:#edf5ff; box-shadow:none; }
+.system-nav-wrap :is(a,button):focus-visible { outline:2px solid #88daff; outline-offset:3px; }
+.intro-nav-overlay { padding-top:90px; }
+.hero-lang-slot { top:92px; right:16px; }
+.jack-home .system-brand { color:white; }
+
+/* Compact header with a decorative ocean strip, never behind the data. */
+.ocean-page-header { position:relative; display:flex; justify-content:space-between; align-items:center; gap:24px; min-height:104px; margin-bottom:22px; padding:10px 0 20px; isolation:isolate; }
+.ocean-page-header::before { content:""; position:absolute; z-index:-1; inset:0 0 0 auto; width:36%; border-radius:8px; background:linear-gradient(90deg,var(--ocean-canvas),#f3f8fc3d),url('/hero-reef-v2.webp') center 35%/cover; opacity:.45; pointer-events:none; }
+.ocean-page-heading { min-width:0; }
+.ocean-page-heading h1 { font-size:30px; font-weight:700; letter-spacing:-.5px; line-height:1.4; }
+.ocean-page-subtitle { margin-top:8px; color:var(--ocean-muted); font-size:13px; line-height:1.8; }
+.ocean-eyebrow { margin-bottom:5px; color:var(--ocean-blue); font-size:11px; letter-spacing:1.5px; }
+.ocean-header-actions { display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
+.ocean-header-actions > * { position:static; }
+
+/* Map legacy dark utility classes to the shared light surfaces. */
+.system-page [class*="rounded"][class*="bg-white/"],
+.system-page [class*="rounded"][class*="bg-[#06345b]"],
+.system-page [class*="rounded"][class*="bg-[#08131b]"],
+.system-page [class*="rounded"][class*="bg-[#071118]"] { background:#fff; border-color:var(--ocean-line); box-shadow:none; backdrop-filter:none; border-radius:10px; }
+.system-page [class*="rounded"][class*="bg-cyan-"] { background:#ecf5ff; background-image:none; border-color:#b8d8f6 !important; box-shadow:none; backdrop-filter:none; }
+.system-page [class*="text-[#d7e2ea]"], .alerts-page .alerts-content [class*="text-[#d7e2ea]"] { color:var(--ocean-muted) !important; }
+.system-page [class*="text-[#e0f2fe]"], .alerts-page .alerts-content [class*="text-[#e0f2fe]"], .system-page [class*="text-slate-"], .system-page [class*="text-black"] { color:var(--ocean-ink) !important; }
+.system-page [class*="text-rose-"], .system-page [class*="text-red-"], .alerts-page .alerts-content [class*="text-rose-"] { color:#dc4157 !important; text-shadow:none; }
+.system-page [class*="text-amber-"], .system-page [class*="text-yellow-"], .alerts-page .alerts-content [class*="text-amber-"] { color:#a56808 !important; text-shadow:none; }
+.system-page [class*="text-emerald-"], .system-page [class*="text-green-"], .alerts-page .alerts-content [class*="text-emerald-"] { color:#148468 !important; text-shadow:none; }
+.system-page [class*="text-cyan-"], .system-page [class*="text-sky-"], .alerts-page .alerts-content [class*="text-cyan-"] { color:#1765bb !important; text-shadow:none; }
+.system-page [class*="text-indigo-"] { color:#5361b2 !important; }
+.system-page [class*="border-white/"] { border-color:var(--ocean-line) !important; }
+.system-page [class*="border-cyan-"] { border-color:#b8d8f6 !important; }
+.system-page [class*="border-rose-"], .system-page [class*="border-red-"] { border-color:#f5cbd2 !important; }
+.system-page [class*="border-amber-"], .system-page [class*="border-yellow-"] { border-color:#efdcba !important; }
+.system-page [class*="border-emerald-"], .system-page [class*="border-green-"] { border-color:#c0e2d8 !important; }
+.system-page [class*="bg-rose-"], .system-page [class*="bg-red-"] { background-color:#fff0f2 !important; }
+.system-page [class*="bg-amber-"], .system-page [class*="bg-yellow-"] { background-color:#fff6e8 !important; }
+.system-page [class*="bg-emerald-"], .system-page [class*="bg-green-"] { background-color:#eaf7f2 !important; }
+.system-page [class*="bg-cyan-"] { background-color:#eaf3ff !important; }
+.system-page button[class*="rounded"]:hover, .system-page a[class*="rounded"]:hover { transform:none; box-shadow:none; border-color:#75a9e5; }
+.system-page button[aria-pressed="true"][class*="rounded"] { box-shadow:inset 0 0 0 1px #2477d5; }
+.system-page :is(input,select,textarea) { color:var(--ocean-ink); background-color:white; caret-color:var(--ocean-blue); color-scheme:light; }
+.system-page :is(input,textarea)::placeholder { color:#8297ac; opacity:1; }
+.system-page :is(button,a,select,input,textarea):focus-visible { outline:2px solid var(--ocean-blue); outline-offset:3px; }
+
+/* Gauges and charts keep the same values, thresholds and interactions. */
+.metric-gauge-card, .metric-gauge-card:hover { min-height:23rem; border:1px solid var(--ocean-line); border-radius:10px; background:#fff; color:var(--ocean-ink); box-shadow:none; backdrop-filter:none; }
+.metric-gauge-card::before { display:none; }
+.metric-gauge-card.is-selected { border-color:var(--ocean-blue); box-shadow:0 0 0 1px var(--ocean-blue); }
+.metric-gauge-layout { min-height:20rem; }
+.metric-gauge-copy, .metric-gauge-name, .metric-gauge-value, .metric-gauge-value small { color:var(--ocean-ink); text-shadow:none; }
+.metric-gauge-name { font-size:18px; font-weight:600; letter-spacing:0; }
+.metric-gauge-value { font-size:36px; font-weight:650; }
+.metric-gauge-range { color:var(--ocean-muted); font-weight:400; }
+.metric-gauge-track { stroke:#e4edf5; }
+.metric-gauge-tick { stroke:#b3c6d8; }
+.metric-gauge-tick.is-major { stroke:#718ba4; }
+.metric-gauge-endpoint { fill:var(--ocean-muted); }
+.metric-gauge-hub-ring { fill:white; stroke:#c3d4e4; }
+.metric-gauge-needle, .metric-gauge-hub { filter:none; }
+.metric-gauge-status-strip > span { background:#f4f7fa; border-color:var(--ocean-line); color:#60768a; font-weight:500; }
+.metric-gauge-status-strip > .is-active.is-normal { background:#e3f4ed; border-color:#a6d4c3; color:#137352; box-shadow:none; }
+.metric-gauge-status-strip > .is-active.is-warning { background:#fff1db; border-color:#ead2a6; color:#976008; box-shadow:none; }
+.metric-gauge-status-strip > .is-active.is-abnormal { background:#ffe9ed; border-color:#f0bdc5; color:#c72f48; box-shadow:none; }
+.trend-line-chart { border-color:var(--ocean-line); background:#fbfdff; box-shadow:none; }
+.trend-axis-label { fill:var(--ocean-muted); font-family:inherit; font-weight:400; }
+.trend-time-labels, .trend-unit { color:var(--ocean-muted); font-weight:400; }
+
+/* Alert workspace: four status cards and the existing event/detail interaction. */
+.alerts-page .alerts-content { max-width:1680px; }
+.alerts-overview-header { padding:0; text-align:left; }
+.alerts-overview-header::before { display:none; }
+.alerts-page .alerts-overview-header h1 { font-size:30px; text-shadow:none; }
+.alerts-page .alerts-overview-header p { margin:8px 0 0; max-width:85ch; color:var(--ocean-muted) !important; font-size:13px; text-shadow:none; }
+.alerts-summary { display:grid; grid-template-columns:auto 1fr; gap:12px 24px; background:none; border:0; border-radius:0; }
+.alerts-summary-grid { grid-column:1 / -1; grid-row:1; gap:16px; }
+.alerts-summary-card { padding:18px 22px; border:1px solid var(--ocean-line); border-radius:9px; background:white; gap:16px; min-height:105px; }
+.alerts-summary-card > svg { width:38px; height:38px; padding:7px; box-sizing:content-box; border-radius:12px; background:#edf5ff; }
+.alerts-summary-card.tone-danger > svg { background:#ffedf0; }
+.alerts-summary-card.tone-warning > svg { background:#fff4e4; }
+.alerts-summary-card.tone-success > svg { background:#e8f6f1; }
+.alerts-summary-card > div { display:grid; grid-template-columns:auto 1fr; gap:5px 14px; align-items:center; }
+.alerts-summary-card strong { grid-row:2; font-size:28px; }
+.alerts-summary-card span { grid-column:1 / -1; margin:0; font-size:13px; color:var(--ocean-ink); font-weight:600; }
+.alerts-summary-card small { margin:0; font-size:11px; }
+.alerts-summary-card[aria-pressed="true"] { background:#f2f7ff; border-color:#76a9e6; box-shadow:inset 0 -2px #1672d4; }
+.alerts-summary-card:hover { background:#f6faff; }
+.alerts-summary-total { grid-row:2; padding:0; gap:8px; }
+.alerts-summary-total > svg { width:17px; height:17px; filter:none; }
+.alerts-summary-total > div { display:flex; gap:6px; align-items:center; }
+.alerts-summary-total strong { font-size:14px; }
+.alerts-summary-total span { margin:0; font-size:12px; }
+.alerts-summary-meta { grid-row:2; width:auto; justify-content:flex-end; border:0; padding:0; font-size:12px; }
+.alerts-summary-meta > svg { width:18px; }
+.alerts-summary-meta > div { display:flex; gap:18px; align-items:center; }
+.alerts-summary-meta strong { font-size:12px; }
+.alerts-page .alerts-layout { gap:18px; margin-top:16px; }
+.alerts-page .alerts-pane, .alerts-page .alerts-detail-panel { border-color:var(--ocean-line); border-radius:10px; box-shadow:0 3px 14px #12447104; }
+.alerts-filters { padding:20px 18px 14px; }
+.alerts-list-scroll { padding:12px; }
+.alerts-group-items { gap:10px; }
+.alerts-group-card { padding:16px 12px; background:#fff; border:1px solid #e5edf5; border-radius:7px; }
+.alerts-group-card.is-selected { background:#edf5ff; border-color:#bdd8fb; box-shadow:inset 3px 0 #2074de; }
+.alerts-event-icon.tone-danger, .alerts-detail-icon { filter:none; }
+.alerts-event-copy { gap:7px; }
+.alerts-event-copy strong { font-size:15px; }
+.alerts-detail-heading { padding:22px; }
+.alerts-title-line h2 { font-size:21px; }
+.alerts-detail-title p { font-size:11px; }
+.alerts-detail-tabs { padding-inline:22px; }
+.alerts-detail-tabs button { font-size:13px; }
+.alerts-detail-tabs button[aria-selected="true"]::after { box-shadow:none; }
+.alerts-detail-body { padding:18px; }
+.alerts-module { padding:16px; border-color:var(--ocean-line); border-radius:7px; background:#fff; }
+.alerts-advice { background:#f3f9ff; }
+.alerts-reading-card { background:#fff4f5; border-color:#f5dce1; border-radius:7px; }
+.alerts-reading-card strong { font-size:32px; }
+.alerts-page .alerts-trend-panel .trend-line-chart { height:205px; }
+.alerts-primary-button { min-height:38px; border:1px solid #1168dc; border-radius:6px; background:#1168dc; color:white; font-size:12px; }
+.alerts-primary-button:hover:not(:disabled) { background:#0958bd; }
+.alerts-note textarea { min-height:80px; border-color:var(--ocean-line); border-radius:5px; }
+.alerts-timeline-dot { background:#fff; border-color:#bfd0df; }
+.tone-danger { color:#dc4157; }.tone-warning { color:#bd790d; }.tone-cyan { color:#1672d4; }.tone-success { color:#148468; }
+.system-route-loading-panel { background:white; border-color:var(--ocean-line); color:var(--ocean-ink); box-shadow:0 8px 30px #12355710; }
+.system-route-loading-ring { border-color:#dce8f3; border-top-color:var(--ocean-blue); }
+
+@media(min-width:1200px) { .alerts-page .alerts-layout { grid-template-columns:minmax(310px,.36fr) minmax(0,1fr); } }
+@media(max-width:1100px) { .system-nav-wrap { gap:12px; }.system-nav .system-nav-item { padding:12px 10px; }.system-brand strong { font-size:18px; }.system-brand small { font-size:8px; }.system-nav-mode { display:none; }.ocean-header-actions { max-width:45%; } }
+@media(max-width:767px) {
+ .system-page { padding:130px 16px 28px; }.system-page > section { padding-top:16px; }
+ .system-nav-wrap, .system-page > .system-nav-wrap { display:grid; grid-template-columns:1fr auto; gap:8px; min-height:112px; padding:10px 16px 0; }
+ .system-brand { gap:8px; }.system-brand > svg { width:27px;height:27px; }.system-brand strong { font-size:18px; }.system-brand small { font-size:8px; }.system-nav-mode { display:block; padding:5px 9px; font-size:10px; grid-column:2;grid-row:1; }
+ .system-nav { grid-column:1 / -1; grid-row:2; display:flex; width:100%; justify-content:space-between; gap:2px; overflow-x:auto; padding-bottom:8px; }
+ .system-nav .system-nav-item { min-height:38px; padding:9px 10px; font-size:12px; gap:4px; }.system-nav-item > svg:not(.system-nav-chevron) { display:none; }.system-alert-badge { min-width:15px;height:15px;font-size:9px; }
+ .intro-nav-overlay { padding-top:120px; }.hero-lang-slot { top:130px;right:0; }
+ .ocean-page-header { display:block; min-height:90px; margin-bottom:18px; }.ocean-page-header::before { width:45%;opacity:.2; }.ocean-header-actions { max-width:none; margin-top:14px; }.ocean-page-heading h1,.alerts-page .alerts-overview-header h1 { font-size:25px; }
+ .alerts-summary { gap:10px; }.alerts-summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }.alerts-summary-card { min-height:95px;padding:12px;gap:10px; }.alerts-summary-card > svg { width:25px;height:25px;padding:6px; }.alerts-summary-card > div { display:flex; flex-direction:column;align-items:flex-start;gap:2px; }.alerts-summary-card span { order:-1;font-size:12px; }.alerts-summary-card strong { font-size:24px; }.alerts-summary-card small { display:none; }
+ .alerts-summary-total { grid-column:1;flex-basis:auto;border:0; }.alerts-summary-meta { grid-column:2; }.alerts-summary-meta > div { display:block; }.alerts-summary-meta > svg { display:none; }.alerts-summary-meta p:last-child { font-size:10px; }
+ .alerts-detail-wrap.is-open { padding:8px; background:#173b6066; backdrop-filter:blur(4px); }.alerts-detail-heading { padding:16px; }.alerts-detail-body { padding:12px; }.alerts-title-line h2 { font-size:18px; }
+ .metric-gauge-card { min-height:22rem; }.metric-gauge-layout { min-height:20rem; }
+}
+
+/* Product introduction shares the business pages' blue and white palette. */
+.jack-home { background:var(--ocean-canvas); color:var(--ocean-ink); font-family:Inter,"Microsoft YaHei",sans-serif; }
+.jack-home section[id] { scroll-margin-top:90px; }
+.jack-home .hero { height:auto; min-height:650px; padding:72px max(32px,calc((100vw - 1320px)/2)) 0; background:#f3f8fc; }
+.jack-home .hero-scroll-background { inset:72px 0 0 44%; transform:none !important; background:linear-gradient(90deg,#f3f8fc 0%,#f3f8fc18 30%,transparent 55%),linear-gradient(0deg,#f3f8fc 0%,transparent 25%),url('/hero-reef-v2.webp') center/cover; }
+.jack-home .hero::before,.jack-home .hero::after { display:none; }
+.jack-home .intro-nav-overlay { position:static; padding:0; }
+.jack-home .hero-lang-slot { position:absolute; top:92px; right:32px; min-height:0; margin:0; }
+.jack-home .language-switcher { padding:4px; border:1px solid #d8e6f0; border-radius:8px; background:#ffffffed; color:#496783; backdrop-filter:blur(8px); }
+.jack-home .language-switcher button { padding:6px 10px; border-radius:5px; color:#496783; font:inherit; font-size:11px; }
+.jack-home .language-switcher button.active { background:#1168dc; color:white; }
+.jack-home .hero-heading-wrap { width:56%; max-width:720px; margin:112px 0 64px; padding:0; }
+.jack-home .intro-eyebrow { margin-bottom:22px; color:#1168dc; font-size:12px; font-weight:600; letter-spacing:3px; }
+.jack-home .hero .hero-title { color:#123557; background:none; -webkit-text-fill-color:currentColor; filter:none; font-size:clamp(36px,4vw,62px); font-weight:750; line-height:1.2; letter-spacing:-1.5px; text-align:left; white-space:normal; text-transform:none; }
+.jack-home .intro-hero-description { max-width:540px; margin-top:24px; color:#536f88; font-size:15px; line-height:2; }
+.jack-home .intro-hero-actions { display:flex; flex-wrap:wrap; align-items:center; gap:16px; margin-top:30px; }
+.jack-home .intro-primary-link,.jack-home .intro-secondary-link { display:inline-flex; align-items:center; justify-content:center; gap:12px; padding:13px 22px; border-radius:7px; font-size:14px; font-weight:600; }
+.jack-home .intro-primary-link { color:white; background:#1168dc; box-shadow:0 5px 16px #1168dc20; }
+.jack-home .intro-primary-link:hover { background:#0958bd; }
+.jack-home .intro-secondary-link { color:#245b8a; background:#fff; border:1px solid #d0dfed; }
+.jack-home .hero-nav-wrap { margin-top:auto; }
+.jack-home .hero-nav { padding:22px 0; border-top:1px solid #cfdfeb; color:#496783; font-size:13px; letter-spacing:0; }
+.jack-home .nav-links { display:flex; flex-wrap:wrap; gap:30px; }
+.jack-home :is(.ocean-gallery,.project-about,.services,.projects)::before,
+.jack-home :is(.ocean-gallery,.project-about,.services,.projects)::after,
+.jack-home .ocean-gallery-glow,.jack-home .project-about-rays,.jack-home .project-ornament,
+.jack-home .ocean-gallery-scroll-background,.jack-home .project-about-scroll-background { display:none; }
+.jack-home .ocean-gallery { margin:0; padding:32px max(32px,calc((100vw - 1320px)/2)); background:white; border-block:1px solid #e1ebf3; }
+.jack-home .ocean-gallery-viewport { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.jack-home .ocean-gallery-row { width:100%; margin:0; padding:0; gap:14px; grid-template-columns:repeat(4,minmax(0,1fr)); transform:none !important; will-change:auto; }
+.jack-home .ocean-gallery-card { border:0; border-radius:10px; box-shadow:none; aspect-ratio:1; }
+.jack-home .project-about { min-height:0; padding:80px 32px; background:white; color:#123557; }
+.jack-home .project-about-content { width:100%; max-width:1320px; margin:auto; display:grid; grid-template-columns:1fr 2fr; align-items:start; gap:60px; text-align:left; }
+.jack-home .project-about-content h2,.jack-home .section-title { margin:0; color:#123557; background:none; -webkit-text-fill-color:currentColor; filter:none; text-shadow:none; font-size:32px; line-height:1.4; font-weight:700; letter-spacing:-.5px; text-align:left; text-transform:none; }
+.jack-home .project-about-copy p { max-width:none; color:#617a94; text-shadow:none; font-size:15px; font-weight:400; line-height:2; }
+.jack-home .project-about-copy p span { display:block; }
+.jack-home .project-about-copy p span + span { margin-top:18px; }
+.jack-home .services { margin:0; padding:72px max(32px,calc((100vw - 1320px)/2)); background:#f3f8fc; color:#123557; }
+.jack-home .services-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; max-width:none; margin-top:32px; border:0; }
+.jack-home .service-item { height:100%; padding:28px; grid-template-columns:44px 1fr; gap:20px; align-items:start; background:white; border:1px solid #dce8f3; border-radius:12px; }
+.jack-home .service-item .big-number { color:#2b85cf; font-size:28px; font-weight:500; line-height:1.4; letter-spacing:-1px; text-shadow:none; }
+.jack-home .service-item h3 { color:#123557; font-size:19px; font-weight:600; text-shadow:none; text-transform:none; }
+.jack-home .service-item p { margin-top:12px; color:#617a94; font-size:14px; font-weight:400; line-height:1.9; text-shadow:none; }
+.jack-home .projects { margin:0; padding:72px max(32px,calc((100vw - 1320px)/2)) 24px; border-radius:0; background:white; }
+.jack-home .project-list { max-width:none; margin-top:32px; gap:24px; }
+.jack-home .project-card { padding:20px; border:1px solid #dce8f3; border-radius:12px; color:#123557; background:#fff; box-shadow:0 4px 20px #12355706; }
+.jack-home .project-top { grid-template-columns:auto 1fr auto; gap:12px; padding:0 0 18px; }
+.jack-home .project-top .big-number { color:#94b3ce; font-size:25px; font-weight:500; }
+.jack-home .project-category { grid-column:2; color:#617a94; font-size:11px; opacity:1; letter-spacing:0; }
+.jack-home .project-top h3 { grid-column:2; grid-row:2; font-size:20px; font-weight:600; text-transform:none; }
+.jack-home .live-button { grid-column:3; grid-row:1 / 3; padding:9px 12px; border:1px solid #cddff5; border-radius:6px; color:#1168dc; background:#f1f7ff; letter-spacing:0; }
+.jack-home .live-button:hover { background:#e3efff; }
+.jack-home .project-grid img { border-radius:8px; }
+.jack-home footer { max-width:none; margin:48px 0 0; padding-top:22px; border-color:#dce8f3; color:#617a94; font-size:12px; letter-spacing:0; gap:16px; }
+.jack-home :is(a,button):focus-visible { outline:2px solid #1168dc; outline-offset:4px; }
+@media(max-width:1100px) {
+ .jack-home .hero-heading-wrap { width:64%; }.jack-home .hero-scroll-background { left:38%;opacity:.75; }
+ .jack-home .ocean-gallery-viewport { grid-template-columns:1fr; }.jack-home .ocean-gallery-card { aspect-ratio:1.7; }
+ .jack-home .project-about-content { gap:32px;grid-template-columns:1fr 2fr; }
+}
+@media(max-width:767px) {
+ .jack-home section[id] { scroll-margin-top:128px; }
+ .jack-home .hero { min-height:0;padding:112px 20px 0; }
+ .jack-home .hero-scroll-background { inset:112px 0 auto;height:240px;opacity:1;background:linear-gradient(0deg,#f3f8fc,transparent 75%),url('/hero-reef-v2.webp') center 40%/cover; }
+ .jack-home .hero-lang-slot { top:128px;right:20px; }
+ .jack-home .hero-heading-wrap { width:100%;margin:210px 0 32px; }
+ .jack-home .intro-eyebrow { margin-bottom:14px;font-size:10px;letter-spacing:2px; }
+ .jack-home .hero .hero-title { font-size:36px;letter-spacing:-1px; }
+ .jack-home .intro-hero-description { margin-top:18px;font-size:14px;line-height:1.9; }
+ .jack-home .intro-hero-actions { margin-top:24px;gap:10px; }
+ .jack-home .intro-primary-link,.jack-home .intro-secondary-link { padding:12px 16px;font-size:13px; }
+ .jack-home .hero-nav { padding:18px 0;font-size:12px; }
+ .jack-home .ocean-gallery { padding:24px 20px; }.jack-home .ocean-gallery-row,.jack-home .ocean-gallery-viewport { gap:8px; }.jack-home .ocean-gallery-card { aspect-ratio:1; border-radius:6px; }
+ .jack-home .project-about,.jack-home .services,.jack-home .projects { padding:44px 20px; }
+ .jack-home .project-about-content { grid-template-columns:1fr;gap:22px; }
+ .jack-home .project-about-content h2,.jack-home .section-title { font-size:26px; }
+ .jack-home .project-about-copy p { font-size:14px; }
+ .jack-home .services-list { grid-template-columns:1fr;margin-top:24px;gap:14px; }
+ .jack-home .service-item { padding:20px;grid-template-columns:30px 1fr;gap:12px; }.jack-home .service-item .big-number { font-size:23px; }.jack-home .service-item h3 { font-size:18px; }
+ .jack-home .project-list { margin-top:24px;gap:18px; }.jack-home .project-card { padding:16px; }.jack-home .project-top { gap:8px;grid-template-columns:auto minmax(0,1fr) auto; }.jack-home .project-top h3 { grid-row:1;font-size:17px;line-height:1.5; }.jack-home .live-button { grid-row:1;width:auto;height:auto;min-height:40px;padding:8px;font-size:11px; }.jack-home .live-button svg { flex-shrink:0; }
+ .jack-home footer { margin-top:32px;font-size:10px;flex-wrap:wrap; }
+}
+
+/* Compact monitoring cards: current value and calibrated semicircular dial. */
+.monitoring-section-heading { display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px; }
+.monitoring-section-heading h2 { display:flex;align-items:center;gap:18px;color:#123557;font-size:26px;font-weight:700; }
+.monitoring-section-heading h2::before { content:"";width:6px;height:28px;border-radius:4px;background:#1677ed; }
+.monitoring-section-heading h2 span { color:#647f99;font-size:15px;font-weight:400; }
+.monitoring-trend-link { display:inline-flex;align-items:center;gap:10px;padding:9px 14px;border:1px solid #2780ed;border-radius:7px;color:#1168dc;font-size:13px;font-weight:600;background:white; }
+.monitoring-trend-link:hover { background:#eaf3ff; }
+#metric-trend { scroll-margin-top:90px; }
+.system-page .metric-gauge-grid { gap:18px; }
+.system-page .metric-gauge-card,.system-page .metric-gauge-card:hover { min-height:0;padding:22px;border-radius:10px;background:#fff;border:1px solid #dce8f3;box-shadow:0 3px 14px #12447104; }
+.system-page .metric-gauge-card.is-selected { border-color:#1677ff;box-shadow:0 0 0 1px #1677ff,0 4px 16px #1677ff10; }
+.system-page .metric-gauge-card:hover { border-color:#79b3fa; }
+.system-page .metric-gauge-layout { display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);grid-template-rows:auto 1fr;gap:18px 4px;min-height:0;align-items:center; }
+.metric-gauge-header { grid-column:1 / -1;display:flex;align-items:center;justify-content:space-between;gap:8px; }
+.system-page .metric-gauge-name { display:flex;align-items:center;gap:12px;font-size:20px;line-height:1.4;font-weight:650;letter-spacing:0; }
+.metric-gauge-name svg { width:29px;height:34px;color:#1677ed;stroke-width:1.8;flex-shrink:0; }
+.metric-gauge-badge { display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:7px;border:1px solid #bdebd9;background:#e9f9f2;color:#168365;font-size:12px;white-space:nowrap; }
+.metric-gauge-badge.is-warning { background:#fff7e5;border-color:#f1dca6;color:#99640b; }
+.metric-gauge-badge.is-abnormal { background:#fff0f2;border-color:#f1c5cd;color:#c44057; }
+.system-page .metric-gauge-dial { grid-column:2;grid-row:2;width:100%;margin:0; }
+.system-page .metric-gauge-copy { grid-column:1;grid-row:2;align-items:flex-start;text-align:left;gap:0; }
+.system-page .metric-gauge-value { justify-content:flex-start;gap:4px;margin:0;font-size:clamp(30px,2.7vw,48px);font-weight:700;line-height:1.25;font-variant-numeric:tabular-nums;letter-spacing:-1.3px; }
+.system-page .metric-gauge-value small { font-size:clamp(12px,1.2vw,19px);font-weight:500;letter-spacing:0; }
+.system-page .metric-gauge-range { margin-top:12px;font-size:12px;line-height:1.8;font-weight:400; }
+.metric-gauge-range > span { display:block;font-weight:500; }
+.system-page .metric-gauge-track { stroke:#eaf1f7;stroke-width:13; }
+.system-page .metric-gauge-zone { stroke-width:12; }
+.system-page .metric-gauge-tick { stroke:#c7dce9;stroke-width:1; }
+.system-page .metric-gauge-tick.is-major { stroke:#adc9dc;stroke-width:1.2; }
+.system-page .metric-gauge-needle { stroke-width:3;filter:none; }
+.metric-gauge-scale { fill:#5c7895;font-size:10px;font-weight:400; }
+.metric-gauge-unit { fill:#5c7895;font-size:13px;font-weight:500; }
+@media(min-width:768px) and (max-width:1199px) { .system-page .metric-gauge-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:767px) {
+ .monitoring-section-heading { gap:10px; }.monitoring-section-heading h2 { gap:9px;font-size:21px; }.monitoring-section-heading h2 span { display:none; }.monitoring-trend-link { padding:8px 10px;font-size:12px; }
+ .system-page .metric-gauge-card,.system-page .metric-gauge-card:hover { padding:18px; }.system-page .metric-gauge-layout { min-height:0;gap:18px 4px; }.system-page .metric-gauge-name { font-size:19px; }.system-page .metric-gauge-value { font-size:36px; }.system-page .metric-gauge-value small { font-size:14px; }.system-page .metric-gauge-range { font-size:12px; }
+ #metric-trend { scroll-margin-top:128px; }
+}

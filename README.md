@@ -201,4 +201,3 @@ npm run fake-sensor     # 终端 B：每 5s 上报一次；控制台打印 accep
 - 时序数据采用复合索引 + keyset 分页 + 时间分桶降采样 + 保留期清理，避免无限增长。
 - 前端 hash 路由（`/#/main`、`/#/main/alerts` 等），`base: "./"`，适配 GitHub Pages 子路径部署。
 
-

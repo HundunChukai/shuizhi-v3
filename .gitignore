@@ -1,0 +1,26 @@
+# dependencies
+node_modules/
+server/node_modules/
+
+# build output
+dist/
+
+# local database (SQLite + WAL/SHM sidecars)
+server/data/
+*.db
+*.db-wal
+*.db-shm
+
+# env
+.env
+.env.local
+server/.env
+
+# logs & os
+*.log
+.DS_Store
+
+# AI tool working files
+.codebuddy/
+.zcode/
+.v-prof/
