@@ -10,9 +10,7 @@
       (function () {
         var query = new URLSearchParams(location.search);
         var debug = "%MODE%" === "development" && ["splashTest", "splashAt", "splashPhase"].some(function (key) { return query.has(key); });
-        var state = window.__SPLASH_STATE__ = { key: "aqua-splash-seen-v1", debug: debug, seen: false, dismissed: false };
-        try { state.seen = !debug && localStorage.getItem(state.key) === "1"; } catch (_) {}
-        if (state.seen) document.documentElement.classList.add("splash-seen");
+        window.__SPLASH_STATE__ = { debug: debug, seen: false };
       })();
     </script>
     <link rel="stylesheet" href="./src/splash.css" />

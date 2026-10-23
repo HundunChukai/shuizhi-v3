@@ -30,16 +30,11 @@ function App() {
   const [route, setRoute] = useState(currentRoute);
 
   useEffect(() => {
-    // 应用挂载后允许启动层退场，并记录提前跳过的访问。
+    // 应用挂载后允许启动层退场。
     const startup = window as unknown as {
       __APP_MOUNTED__?: boolean;
-      __SPLASH_STATE__?: { key: string; debug: boolean; dismissed: boolean };
     };
     startup.__APP_MOUNTED__ = true;
-    const visit = startup.__SPLASH_STATE__;
-    if (visit?.dismissed && !visit.debug) {
-      try { localStorage.setItem(visit.key, "1"); } catch { /* Storage may be disabled. */ }
-    }
   }, []);
 
   useEffect(() => {

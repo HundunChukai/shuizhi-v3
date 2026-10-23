@@ -5,20 +5,11 @@
   if (!splash) return;
 
   var visit = window.__SPLASH_STATE__;
-  if (visit && visit.seen) { splash.remove(); return; }
 
   function requestApplication() {
     if (!visit || visit.appRequested) return;
     visit.appRequested = true;
     if (visit.startApp) visit.startApp();
-  }
-
-  function rememberVisit() {
-    if (!visit || visit.debug) return;
-    visit.dismissed = true;
-    if (window.__APP_MOUNTED__ === true) {
-      try { localStorage.setItem(visit.key, "1"); } catch (_) {}
-    }
   }
 
   var scene = splash.querySelector(".sc-scene");
@@ -347,10 +338,9 @@
     if (visit && visit.showApp) visit.showApp();
   }
 
-  function quickExit(remember) {
+  function quickExit() {
     if (leaving || removed) return;
     requestApplication();
-    if (remember) rememberVisit();
     leaving = true;
     cancelAnimationFrame(frameId);
     function finish() {
@@ -366,7 +356,7 @@
     finish();
   }
 
-  function skip() { quickExit(true); }
+  function skip() { quickExit(); }
   function onKeydown(event) { if (event.key === "Escape" || event.key === "Esc") skip(); }
   function onResize() {
     resize();
@@ -392,7 +382,7 @@
     if (removed || leaving || document.hidden) return;
     var foreground = time - startTime - hiddenTotal;
     var activeTime = playbackStart === null ? foreground : foreground - playbackStart;
-    if (activeTime >= 12000 && !(visit && visit.appFailed)) { quickExit(false); return; }
+    if (activeTime >= 12000 && !(visit && visit.appFailed)) { quickExit(); return; }
     if (!reduced && playbackStart === null) {
       if (sceneReady) {
         if (!warmupStart) {
@@ -419,7 +409,7 @@
     var ready = isReady(time);
     if (reduced) {
       render(0, time);
-      if (foreground >= 350) { quickExit(true); return; }
+      if (foreground >= 350) { quickExit(); return; }
       frameId = requestAnimationFrame(frame);
       return;
     }
@@ -432,7 +422,7 @@
       elapsed = activeTime - heldTotal;
     }
     render(Math.max(0, elapsed), time);
-    if (elapsed >= 9000) { rememberVisit(); cleanup(); return; }
+    if (elapsed >= 9000) { cleanup(); return; }
     frameId = requestAnimationFrame(frame);
   }
 
