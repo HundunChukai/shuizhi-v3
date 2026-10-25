@@ -1,4 +1,6 @@
 html,body{margin:0;min-height:100%;background:#010812}
+#startup-message{padding:48px 24px;color:#e6f6ff;font:16px/1.8 sans-serif;text-align:center}
+#startup-message a{color:#8bdcff}
 html.splash-lock,html.splash-lock body{overflow:hidden!important}
 html.splash-lock body{box-sizing:border-box;padding-right:var(--splash-scrollbar-width,0px)}
 #splash{--horizon:58%;--moon-size:188px;--moon-y:50%;--moon-scale:1;--moon-glow:0;--network:0;--data-tint:0;--orbit-opacity:0;--road-opacity:0;position:fixed;inset:0;width:100vw;height:100vh;z-index:9999;overflow:hidden;color:#eefaff;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;user-select:none;isolation:isolate}
@@ -25,10 +27,11 @@ html.splash-lock body{box-sizing:border-box;padding-right:var(--splash-scrollbar
 .sc-node svg{width:27%;height:27%;flex:none;fill:none;stroke:#e9faff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .sc-node strong{margin-top:2px;font-size:clamp(.67rem,.9vw,.83rem);line-height:1.1;font-weight:500}
 .sc-node span{margin-top:3px;color:#acdfff;font-size:clamp(.53rem,.7vw,.67rem)}
-.sc-road{position:absolute;z-index:4;inset:var(--horizon) 0 0;opacity:var(--road-opacity);background:radial-gradient(ellipse 22% 94% at 50% 92%,rgba(164,228,255,.58),rgba(29,115,185,.21) 38%,transparent 75%);mix-blend-mode:screen;pointer-events:none}
-.sc-wave{position:absolute;z-index:5;bottom:-3%;width:55%;height:80%;opacity:0;will-change:transform,opacity;pointer-events:none}
-.sc-wave img{display:block;width:100%;height:100%;object-fit:fill}
-.sc-wave-left{left:-5%}.sc-wave-right{right:-5%}.sc-wave-right img{transform:scaleX(-1)}
+.sc-wave{position:absolute;z-index:5;bottom:calc(100% - var(--wave-base));width:var(--wave-width);height:var(--wave-height);opacity:0;pointer-events:none;will-change:transform,opacity;mask-image:linear-gradient(to bottom,#000 0%,#000 64%,transparent 100%)}
+.sc-wave img,.sc-wave-water{display:block;width:100%;height:100%;object-fit:fill;transform-origin:50% 100%}
+.sc-wave-water{position:absolute;inset:0;visibility:hidden}
+.sc-wave-left{right:50%;transform-origin:100% 100%;mask-image:linear-gradient(to bottom,#000 0%,#000 64%,transparent 100%),linear-gradient(to right,transparent 0%,#000 28%);mask-composite:intersect}.sc-wave-right{left:50%;transform-origin:0% 100%;mask-image:linear-gradient(to bottom,#000 0%,#000 64%,transparent 100%),linear-gradient(to left,transparent 0%,#000 28%);mask-composite:intersect}
+.sc-wave-right img,.sc-wave-right .sc-wave-water{transform:scaleX(-1)}
 .sc-copy{position:absolute;z-index:6;top:22%;left:50%;width:min(90vw,680px);transform:translateX(-50%);text-align:center;pointer-events:none}
 .sc-copy h1{margin:0;font:500 clamp(2rem,4vw,4.2rem)/1.25 "Noto Serif SC","Songti SC",SimSun,serif;letter-spacing:.22em;text-shadow:0 3px 14px rgba(205,228,244,.2)}
 .sc-copy p{margin:.6rem 0 0;color:rgba(236,248,255,.88);font-size:clamp(.86rem,1.3vw,1.1rem);letter-spacing:.2em}
@@ -45,12 +48,13 @@ html.splash-lock body{box-sizing:border-box;padding-right:var(--splash-scrollbar
 .sc-reduced .sc-moon{top:43%;transform:translate(-50%,-50%)!important}
 .sc-reduced .sc-moon-glow{top:43%}
 .sc-reduced .sc-copy{opacity:1!important}
-@media(max-width:680px){.sc-copy{top:max(14%,calc(env(safe-area-inset-top) + 65px))}.sc-copy h1{letter-spacing:.16em}.sc-node{width:clamp(55px,16vw,72px);height:clamp(55px,16vw,72px)}.sc-wave{width:68%;height:74%}.sc-footer{bottom:max(3vh,calc(env(safe-area-inset-bottom) + 13px))}}
-@media(max-height:540px) and (orientation:landscape){.sc-copy{top:8%}.sc-copy p,.sc-copy small{display:none}.sc-node{width:clamp(44px,12vh,62px);height:clamp(44px,12vh,62px)}.sc-footer{bottom:max(7px,env(safe-area-inset-bottom));font-size:.66rem}.sc-footer:after{bottom:4px}.sc-wave{height:78%}}
-@media(prefers-reduced-motion:reduce){.sc-water,.sc-metrics,.sc-orbits,.sc-wave,.sc-road{display:none!important}.sc-moon{top:43%;transform:translate(-50%,-50%)!important}.sc-moon-glow{top:43%}.sc-copy{opacity:1!important}}
+@media(max-width:680px){.sc-copy{top:max(14%,calc(env(safe-area-inset-top) + 65px))}.sc-copy h1{letter-spacing:.16em}.sc-node{width:clamp(55px,16vw,72px);height:clamp(55px,16vw,72px)}.sc-footer{bottom:max(3vh,calc(env(safe-area-inset-bottom) + 13px))}}
+@media(max-height:540px) and (orientation:landscape){.sc-copy{top:8%}.sc-copy p,.sc-copy small{display:none}.sc-node{width:clamp(44px,12vh,62px);height:clamp(44px,12vh,62px)}.sc-footer{bottom:max(7px,env(safe-area-inset-bottom));font-size:.66rem}.sc-footer:after{bottom:4px}}
+@media(prefers-reduced-motion:reduce){.sc-water,.sc-metrics,.sc-orbits,.sc-wave{display:none!important}.sc-moon{top:43%;transform:translate(-50%,-50%)!important}.sc-moon-glow{top:43%}.sc-copy{opacity:1!important}}
 
 
 html.splash-seen #splash{display:none}
 .sc-reduced.splash-leave{transition-duration:.22s}
 @media(max-width:680px){.sc-loader{bottom:calc(max(3vh,env(safe-area-inset-bottom) + 13px) + 44px)}}
 @media(max-height:540px) and (orientation:landscape){.sc-loader{bottom:calc(max(7px,env(safe-area-inset-bottom)) + 36px);font-size:.7rem}}
+

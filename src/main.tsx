@@ -35,6 +35,7 @@ function App() {
       __APP_MOUNTED__?: boolean;
     };
     startup.__APP_MOUNTED__ = true;
+    document.getElementById("startup-message")?.remove();
   }, []);
 
   useEffect(() => {
@@ -94,3 +95,4 @@ createRoot(document.getElementById("root")!).render(
     </DataProvider>
   </StrictMode>,
 );
+

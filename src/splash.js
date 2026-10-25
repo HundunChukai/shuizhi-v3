@@ -18,8 +18,9 @@
   var skyImage = splash.querySelector(".sc-sky");
   var seaImage = splash.querySelector(".sc-sea-base");
   var waveImages = Array.prototype.slice.call(splash.querySelectorAll(".sc-wave img"));
-  var waveLeft = splash.querySelector(".sc-wave-left");
-  var waveRight = splash.querySelector(".sc-wave-right");
+  var waves = [splash.querySelector(".sc-wave-left"), splash.querySelector(".sc-wave-right")];
+  var waveCanvases = Array.prototype.slice.call(splash.querySelectorAll(".sc-wave-water"));
+  var waveContexts = [];
   var canvas = splash.querySelector(".sc-water");
   var network = splash.querySelector(".sc-network");
   var metrics = Array.prototype.slice.call(splash.querySelectorAll(".sc-node"));
@@ -45,6 +46,11 @@
 
   var context = null;
   try { if (testMode !== "canvasOff") context = canvas.getContext("2d", { alpha: true }); } catch (_) {}
+  waveCanvases.forEach(function (surface) {
+    var paint = null;
+    try { if (!reduced && testMode !== "canvasOff") paint = surface.getContext("2d", { alpha: true }); } catch (_) {}
+    waveContexts.push(paint);
+  });
   var startTime = performance.now();
   var hiddenAt = document.hidden ? startTime : 0;
   var hiddenTotal = 0;
@@ -52,7 +58,9 @@
   var heldTotal = 0;
 
   var frameId = 0;
-  var exitTimer = 0;
+  var exitStarted = null;
+  var exitOpacity = 1;
+  var forceExit = false;
   var width = 0;
   var height = 0;
   var horizon = 0;
@@ -83,7 +91,7 @@
   document.documentElement.classList.add("splash-lock");
 
   function clamp(value) { return Math.max(0, Math.min(1, value)); }
-  function ease(value) { value = clamp(value); return value * value * (3 - 2 * value); }
+  function ease(value) { value = clamp(value); return value * value * value * (value * (value * 6 - 15) + 10); }
   function mix(a, b, value) { return a + (b - a) * value; }
   function round(value) { return Math.round(value * 100) / 100; }
   function seeded(index) {
@@ -103,9 +111,16 @@
     ringSize = shortLandscape ? Math.min(height * .53, 300, width * .7) : width <= 680 ? Math.min(width * .72, 390, height * .57) : Math.min(width * .44, 520, height * .65);
     scene.style.setProperty("--horizon", horizon + "px");
     scene.style.setProperty("--moon-size", moonSize + "px");
+    scene.style.setProperty("--wave-width", width * (width <= 680 ? 1 : .90) + "px");
+    scene.style.setProperty("--wave-height", height * (width <= 680 ? .62 : .88) + "px");
+    scene.style.setProperty("--wave-base", height * (width <= 680 ? 1 : 1.04) + "px");
+    waveCanvases.forEach(function (surface) {
+      surface.width = Math.min(960, Math.round(width * (width <= 680 ? 1 : .9)));
+      surface.height = Math.min(640, Math.round(height * (width <= 680 ? .62 : .88)));
+    });
 
     if (context) {
-      var dpr = Math.min(2, window.devicePixelRatio || 1);
+      var dpr = Math.min(1.5, window.devicePixelRatio || 1);
       canvas.width = Math.max(1, Math.round(width * dpr));
       canvas.height = Math.max(1, Math.round(seaHeight * dpr));
       canvas.style.top = horizon + "px";
@@ -220,32 +235,115 @@
     });
   }
 
-  function drawSea(time, rise) {
+  function drawSea(time, rise, elapsed) {
     if (!context || !seaReady) return;
     context.clearRect(0, 0, width, seaHeight);
-    var bands = width < 680 ? 9 : 14;
-    for (var band = 0; band < bands; band++) {
-      var from = band / bands;
-      var to = (band + 1) / bands;
-      var drift = Math.sin(time * .0002 + band * .83) * (1.1 + from * 3.3);
-      context.drawImage(seaImage, 0, seaImage.naturalHeight * from, seaImage.naturalWidth, seaImage.naturalHeight * (to - from) + 2, -6 + drift, seaHeight * from, width + 12, seaHeight * (to - from) + 1.5);
+    // Keep the same cover crop as the fallback image; the horizon never moves.
+    var cover = Math.max(width / seaImage.naturalWidth, seaHeight / seaImage.naturalHeight);
+    var sourceWidth = width / cover;
+    var sourceX = (seaImage.naturalWidth - sourceWidth) / 2;
+    var swell = ease((elapsed - 5600) / 1800);
+    var seconds = time / 1000;
+    var strips = Math.ceil(seaHeight / 3);
+    for (var band = 0; band < strips; band++) {
+      var y = band * seaHeight / strips;
+      var depth = y / seaHeight;
+      // Phase advances toward the viewer; perspective compresses distant waves.
+      var phase = 18 * Math.sqrt(depth + .035) - seconds * 1.65;
+      var amplitude = depth * depth * (2 + 7 * swell);
+      var offset = Math.sin(phase) * amplitude + Math.sin(phase * 1.73 + seconds * .32) * amplitude * .22;
+      var sampleY = Math.max(0, Math.min(seaHeight - 4, y + offset));
+      var drift = Math.sin(phase * .72 + .8) * depth * (1 + swell * 2);
+      context.drawImage(seaImage, sourceX, sampleY / cover, sourceWidth, Math.min(4 / cover, seaImage.naturalHeight - sampleY / cover), -4 + drift, y, width + 8, seaHeight / strips + 1);
+      // Soft light on the rising face, shadow on the trailing face; no hard crest outline.
+      var face = Math.cos(phase) * depth * (.025 + .055 * swell);
+      context.fillStyle = face > 0 ? "rgba(174,218,237," + face + ")" : "rgba(0,8,22," + (-face * 1.3) + ")";
+      context.fillRect(0, y, width, seaHeight / strips + 1);
     }
-    context.fillStyle = "rgba(1,9,20," + round(mix(.41, .13, rise)) + ")";
+    context.fillStyle = "rgba(1,9,20," + mix(.32, .08, rise) + ")";
     context.fillRect(0, 0, width, seaHeight);
-    var strength = mix(.1, .66, rise);
+    var strength = mix(.08, .38, rise);
     for (var i = 0; i < glints.length; i++) {
       var glint = glints[i];
       var depth = glint.depth;
+      var phase = 18 * Math.sqrt(depth + .035) - seconds * 1.65;
       var spread = width * (.017 + .16 * depth);
-      var x = width / 2 + glint.side * spread + Math.sin(time * .00082 + glint.phase) * (1.3 + depth * 3);
-      var y = seaHeight * depth;
-      var alpha = glint.light * strength * (.57 + .43 * Math.sin(time * .00135 + glint.phase));
-      context.strokeStyle = "rgba(220,240,243," + round(alpha) + ")";
+      var x = width / 2 + glint.side * spread + Math.sin(phase * .72 + .8) * depth * (1 + swell * 2);
+      var y = seaHeight * depth - Math.sin(phase) * depth * depth * (2 + 7 * swell);
+      var alpha = glint.light * strength * (.5 + .5 * Math.cos(phase + glint.phase));
+      context.strokeStyle = "rgba(220,240,243," + alpha + ")";
       context.lineWidth = .55 + depth * 1.15;
       context.beginPath();
       context.moveTo(x - glint.length * (2 + depth * 7), y);
       context.quadraticCurveTo(x, y - depth * 1.6, x + glint.length * (2 + depth * 7), y + depth);
       context.stroke();
+    }
+  }
+
+  function drawWaves(elapsed) {
+    if (reduced || elapsed < 5550 || elapsed > 8900) return;
+    var seconds = elapsed / 1000;
+    for (var i = 0; i < waveCanvases.length; i++) {
+      var paint = waveContexts[i], surface = waveCanvases[i], texture = waveImages[i];
+      if (!paint || !texture || !texture.naturalWidth) continue;
+      try {
+        var cw = surface.width, ch = surface.height;
+        paint.globalCompositeOperation = "source-over";
+        paint.clearRect(0, 0, cw, ch);
+        var lift = ease((elapsed - 5750) / 1550);
+        function waterY(depth) {
+          // The lip falls first; the lower face continues pouring after it.
+          var drain = ease((elapsed - 7350 - depth * 240) / 1500);
+          var heightEnvelope = .12 + .88 * lift * (1 - drain);
+          var curl = Math.sin(depth * 13 - seconds * 2.8) * Math.sin(Math.PI * depth) * .018 * lift * (1 - drain);
+          return ch * (1 - (1 - depth) * heightEnvelope + curl);
+        }
+        // Deform the water inside the canvas, instead of scaling the whole image.
+        // Rows follow different trajectories while both feet stay in the sea.
+        for (var y = 0; y < ch; y += 3) {
+          var depth = y / ch;
+          var body = Math.sin(Math.PI * depth);
+          var drift = (Math.sin(depth * 14 - seconds * 3.2) * (.003 + .013 * body) + .003 * body * Math.sin(depth * 39 - seconds * 5.1)) * cw * lift;
+          var flow = Math.sin(depth * 19 - seconds * 3.4) * .007 * body;
+          var sourceY = Math.max(0, Math.min(texture.naturalHeight - 1, (depth + flow) * texture.naturalHeight));
+          var sourceHeight = Math.min(texture.naturalHeight - sourceY, 4 * texture.naturalHeight / ch);
+          var destY = waterY(depth);
+          var stripHeight = Math.max(.5, waterY(Math.min(1, (y + 3) / ch)) - destY + .7);
+          paint.drawImage(texture, 0, sourceY, texture.naturalWidth, sourceHeight, drift - 4, destY, cw + 8, stripHeight);
+        }
+        // Moonlight follows the inward-facing curl; alpha clipping leaves the sky untouched.
+        paint.globalCompositeOperation = "source-atop";
+        for (var light = 0; light < 4; light++) {
+          var d = .12 + light * .20;
+          var lx = cw * (.52 - .22 * Math.sin(Math.PI * d) + .22 * d);
+          var ly = waterY(d);
+          var radius = cw * .14;
+          var reflection = paint.createRadialGradient(lx, ly, 0, lx, ly, radius);
+          reflection.addColorStop(0, "rgba(201,228,251," + (.085 + .025 * Math.sin(seconds * 2.2 - light)) + ")");
+          reflection.addColorStop(1, "rgba(144,195,235,0)");
+          paint.fillStyle = reflection;
+          paint.fillRect(lx - radius, ly - radius, radius * 2, radius * 2);
+        }
+        for (var spark = 0; spark < 22; spark++) {
+          var d = .10 + spark / 24 * .76;
+          var phase = seconds * 3.4 - d * 19;
+          var sx = cw * (.52 - .22 * Math.sin(Math.PI * d) + .22 * d + .035 * Math.sin(spark * 2.4));
+          var sy = waterY(d + Math.sin(phase) * .004);
+          paint.strokeStyle = "rgba(222,243,255," + (.04 + .10 * Math.pow(.5 + .5 * Math.cos(phase), 3)) + ")";
+          paint.lineWidth = 1 + d;
+          paint.beginPath();
+          paint.moveTo(sx - cw * .012, sy);
+          paint.quadraticCurveTo(sx, sy - 1.5, sx + cw * .012, sy + 1);
+          paint.stroke();
+        }
+        paint.globalCompositeOperation = "source-over";
+        surface.style.visibility = "visible";
+        texture.style.visibility = "hidden";
+      } catch (_) {
+        waveContexts[i] = null;
+        surface.style.visibility = "hidden";
+        texture.style.visibility = "";
+      }
     }
   }
 
@@ -262,8 +360,8 @@
     var rise = ease((t - 1000) / 2000);
     var converge = ease((t - 4800) / 1150);
     var clearData = ease((t - 6800) / 600);
-    var wallForm = ease((t - 6800) / 600);
-    var opening = ease((t - 8100) / 900);
+
+    var opening = ease((t - 7500) / 1500);
     var baseY = horizon + moonSize * .58 - moonSize * 1.12 * rise;
     var globeY = baseY - moonSize * .18 * converge;
     var fifthY = horizon - moonSize * 1.16;
@@ -277,7 +375,6 @@
     scene.style.setProperty("--data-tint", round(ease((t - 5000) / 1050) * .84 * (1 - clearData)));
     scene.style.setProperty("--orbit-opacity", round((.37 * ease((t - 3000) / 450) + .52 * ease((t - 4900) / 800)) * (1 - clearData)));
     scene.style.setProperty("--orbit-size", round(mix(ringSize * .82, moonSize * 1.9, converge)) + "px");
-    scene.style.setProperty("--road-opacity", round(wallForm * .67 * (1 - opening * .4)));
 
     var copyOpacity = 1 - ease((t - 2200) / 600);
     copy.style.opacity = round(copyOpacity);
@@ -313,47 +410,71 @@
       trails[i].style.opacity = round(Math.sin(Math.PI * gather) * .62);
       trails[i].style.strokeDashoffset = round(450 * (1 - gather));
     }
-    waveLeft.style.opacity = round(wallForm * (1 - opening * .2));
-    waveRight.style.opacity = round(wallForm * (1 - opening * .2));
-    var waveRetreat = 120 * ease((opening - .2) / .8);
-    waveLeft.style.transform = "translate3d(" + round(-12 * (1 - wallForm) - waveRetreat) + "%," + round(30 * (1 - wallForm)) + "%,0)";
-    waveRight.style.transform = "translate3d(" + round(12 * (1 - wallForm) + waveRetreat) + "%," + round(30 * (1 - wallForm)) + "%,0)";
-    splash.style.opacity = round(1 - opening);
-    try { if (!reduced) drawSea(time - startTime - hiddenTotal, rise); } catch (_) { context = null; }
+    drawWaves(t);
+    // Both crests start together on the central water surface. Their feet stay
+    // anchored while the water separates, rises, then falls back into the sea.
+    for (var w = 0; w < waves.length; w++) {
+      var localTime = t;
+      var lift = ease((localTime - 5750) / 1550);
+      var split = ease((localTime - 6000) / 1500);
+      var settle = ease((localTime - 7350) / 1500);
+      var direction = w === 0 ? -1 : 1;
+      var inset = width <= 680 ? 30 : 31;
+      // The new rounded lip reaches farther inward; open it without shrinking the swell.
+      var xWave = direction * (-inset + 20 * split + 4 * settle);
+      var initialWidth = inset / 50;
+      var scaleX = initialWidth + (1 - initialWidth) * split + .06 * settle;
+      var scaleY = waveCanvases[w] && waveContexts[w] && waveCanvases[w].style.visibility === "visible" ? 1 : .12 + .88 * lift * (1 - settle);
+      var lean = direction * (-3 * lift + 9 * settle);
+      waves[w].style.opacity = reduced ? 0 : ease((localTime - 5600) / 650) * (1 - ease((localTime - 8400) / 500));
+      waves[w].style.transform = "translate3d(" + xWave.toFixed(4) + "%,0%,0) skewX(" + lean.toFixed(4) + "deg) scale(" + scaleX.toFixed(5) + "," + scaleY.toFixed(5) + ")";
+    }
+    splash.style.opacity = 1 - opening;
+    try { if (!reduced) drawSea(frozen ? t : time - startTime - hiddenTotal, rise, t); } catch (_) { context = null; canvas.style.visibility = "hidden"; }
+
   }
 
   function cleanup() {
     if (removed) return;
     removed = true;
     cancelAnimationFrame(frameId);
-    clearTimeout(exitTimer);
     window.removeEventListener("resize", onResize);
     window.removeEventListener("keydown", onKeydown);
     document.removeEventListener("visibilitychange", onVisibility);
     skipButton.removeEventListener("click", skip);
+    splash.removeEventListener("click", skip);
     trackedImages.forEach(function (image) { image.onload = null; image.onerror = null; });
     document.documentElement.classList.remove("splash-lock");
     document.documentElement.style.removeProperty("--splash-scrollbar-width");
     splash.remove();
+    var notice = document.getElementById("startup-message");
+    if (notice && window.__APP_MOUNTED__ !== true) notice.hidden = false;
     if (visit && visit.showApp) visit.showApp();
   }
 
-  function quickExit() {
+  function quickExit(force) {
     if (leaving || removed) return;
     requestApplication();
     leaving = true;
+    forceExit = Boolean(force);
+    exitOpacity = Number(splash.style.opacity || 1);
     cancelAnimationFrame(frameId);
-    function finish() {
-      if (window.__APP_MOUNTED__ !== true) {
-        if (visit && visit.appFailed) return;
-        exitTimer = window.setTimeout(finish, 50);
-        return;
-      }
-      splash.classList.add("splash-leave");
-      splash.style.opacity = "0";
-      exitTimer = window.setTimeout(cleanup, reduced ? 240 : 380);
+    exitFrame(performance.now());
+  }
+
+  function exitFrame(time) {
+    if (removed || document.hidden) return;
+    var foreground = time - startTime - hiddenTotal;
+    if (exitStarted === null && (forceExit || window.__APP_MOUNTED__ === true || (visit && visit.appFailed) || foreground >= 12000)) {
+      exitStarted = foreground;
+      splash.style.pointerEvents = "none";
     }
-    finish();
+    if (exitStarted !== null) {
+      var progress = (foreground - exitStarted) / (reduced ? 240 : 380);
+      splash.style.opacity = exitOpacity * (1 - ease(progress));
+      if (progress >= 1) { cleanup(); return; }
+    }
+    frameId = requestAnimationFrame(exitFrame);
   }
 
   function skip() { quickExit(); }
@@ -374,7 +495,8 @@
       hiddenTotal += hiddenDuration;
       if (heldAt) heldAt += hiddenDuration;
       hiddenAt = 0;
-      if (!frozen && !leaving) frameId = requestAnimationFrame(frame);
+      if (leaving) frameId = requestAnimationFrame(exitFrame);
+      else if (!frozen) frameId = requestAnimationFrame(frame);
     }
   }
 
@@ -382,7 +504,7 @@
     if (removed || leaving || document.hidden) return;
     var foreground = time - startTime - hiddenTotal;
     var activeTime = playbackStart === null ? foreground : foreground - playbackStart;
-    if (activeTime >= 12000 && !(visit && visit.appFailed)) { quickExit(); return; }
+    if (foreground >= 12000) { quickExit(true); return; }
     if (!reduced && playbackStart === null) {
       if (sceneReady) {
         if (!warmupStart) {
@@ -433,11 +555,13 @@
     resize();
     preload();
     skipButton.addEventListener("click", skip);
+    splash.addEventListener("click", skip);
     window.addEventListener("keydown", onKeydown);
     window.addEventListener("resize", onResize, { passive: true });
     document.addEventListener("visibilitychange", onVisibility);
     if (frozen) {
       splash.classList.add("sc-ready");
+      requestApplication();
       render(frozenAt, performance.now());
 
     } else {

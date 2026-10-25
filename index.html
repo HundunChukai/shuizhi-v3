@@ -37,9 +37,8 @@
           <div class="sc-node" style="--x:.34;--y:.2"><div class="sc-node-content"><svg viewBox="0 0 24 24"><path d="M3 8c3-3 5 3 9 0s6 3 9 0M3 13c3-3 5 3 9 0s6 3 9 0M3 18c3-3 5 3 9 0s6 3 9 0"/></svg><strong>盐度</strong><span>PSU</span></div></div>
           <div class="sc-node" style="--x:0;--y:.39"><div class="sc-node-content"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v6L5 19h14L14 9V3M8 15h8"/></svg><strong>氨氮</strong><span>mg/L</span></div></div>
         </div>
-        <div class="sc-road" aria-hidden="true"></div>
-        <div class="sc-wave sc-wave-left" aria-hidden="true"><img src="./images/splash/wave-left-v2.webp" alt="" /></div>
-        <div class="sc-wave sc-wave-right" aria-hidden="true"><img src="./images/splash/wave-left-v2.webp" alt="" /></div>
+        <div class="sc-wave sc-wave-left" aria-hidden="true"><img src="./images/splash/wave-left-v3.webp" alt="" /><canvas class="sc-wave-water"></canvas></div>
+        <div class="sc-wave sc-wave-right" aria-hidden="true"><img src="./images/splash/wave-left-v3.webp" alt="" /><canvas class="sc-wave-water"></canvas></div>
         <div class="sc-copy"><h1>海上生明月</h1><p>以数据守护每一片海</p><small>CLEAN OCEAN · BRIGHTER TOMORROW</small></div>
         <div class="sc-loader" role="status">正在准备页面…</div>
         <div class="sc-footer"><span>让每一滴水，都更清澈</span><span>探索 · 监测 · 守护</span><span>数据 · 让海洋更可持续</span><span>汇聚六项指标 · 守护蔚蓝之海</span><span>通向更清澈的未来</span></div>
@@ -48,6 +47,8 @@
     </div>
     <noscript><style>#splash{display:none}</style></noscript>
     <div id="root"></div>
+    <div id="startup-message" hidden role="status">页面暂未加载完成，请稍候或<a href="">刷新重试</a>。</div>
     <script type="module" src="./src/startup.js"></script>
   </body>
 </html>
+
